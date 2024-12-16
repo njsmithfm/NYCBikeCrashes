@@ -1,6 +1,6 @@
 ---
 theme: dashboard
-title: dashboard
+title: Dashboard w/ Cards 
 toc: false
 ---
 
@@ -13,7 +13,7 @@ import {BurndownPlot} from "./components/burndownPlot.js";
 <!-- Load and transform the data -->
 
 ```js
-const crashes = FileAttachment("data/crashes.csv").csv({typed: true});
+const crashes = FileAttachment("data/crashes.csv").csv({typed: true}); // change pathway to API narrowed by cyclist injured >= 1
 console.log(crashes);
 ```
 

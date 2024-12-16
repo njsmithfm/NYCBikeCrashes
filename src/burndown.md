@@ -1,3 +1,7 @@
+---
+title: Burndown Chart
+---
+
 ```js
 import * as Plot from "npm:@observablehq/plot";
 import {resize} from "npm:@observablehq/stdlib";
