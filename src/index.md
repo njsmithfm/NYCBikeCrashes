@@ -1,112 +1,131 @@
----
-toc: false
-Title: NYC Bicycle Crash Data
----
 
 <div class="hero">
   <h1>NYC Bike Crash Dashboard</h1>
-  <h2>Welcome to your new app! Edit&nbsp;<code style="font-size: 90%;">src/index.md</code> to change this page.</h2>
-  <a href="https://observablehq.com/framework/getting-started">Get started<span style="display: inline-block; margin-left: 0.25rem;">↗︎</span></a>
+
+  <!-- <h2>Welcome to your new app! Edit&nbsp;<code style="font-size: 90%;">src/index.md</code> to change this page.</h2> -->
+  <!-- <a href="https://observablehq.com/framework/getting-started">Get started<span style="display: inline-block; margin-left: 0.25rem;">↗︎</span></a> -->
 </div>
 
-<div class="grid grid-cols-2" style="grid-auto-rows: 504px;">
-  <div class="card">${
-    resize((width) => Plot.plot({
-      title: "Your awesomeness over time 🚀",
-      subtitle: "Up and to the right!",
-      width,
-      y: {grid: true, label: "Awesomeness"},
-      marks: [
-        Plot.ruleY([0]),
-        Plot.lineY(aapl, {x: "Date", y: "Close", tip: true})
-      ]
-    }))
-  }</div>
-  <div class="card">${
-    resize((width) => Plot.plot({
-      title: "How big are penguins, anyway? 🐧",
-      width,
-      grid: true,
-      x: {label: "Body mass (g)"},
-      y: {label: "Flipper length (mm)"},
-      color: {legend: true},
-      marks: [
-        Plot.linearRegressionY(penguins, {x: "body_mass_g", y: "flipper_length_mm", stroke: "species"}),
-        Plot.dot(penguins, {x: "body_mass_g", y: "flipper_length_mm", stroke: "species", tip: true})
-      ]
-    }))
-  }</div>
-</div>
+<div id="map" style="width: 100%; height: 600px;"></div>
 
----
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
-## Next steps
+<script>
+  // Initialize the map centered on Brooklyn
+  const map = L.map('map').setView([40.6782, -73.9442], 12); // Zoom level 12 for Brooklyn
 
-Here are some ideas of things you could try…
+  // Add a light mode tile layer (default OpenStreetMap)
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 70,
+    attribution: '© OpenStreetMap contributors',
+  }).addTo(map);
 
-<div class="grid grid-cols-4">
-  <div class="card">
-    Chart your own data using <a href="https://observablehq.com/framework/lib/plot"><code>Plot</code></a> and <a href="https://observablehq.com/framework/files"><code>FileAttachment</code></a>. Make it responsive using <a href="https://observablehq.com/framework/javascript#resize(render)"><code>resize</code></a>.
-  </div>
-  <div class="card">
-    Create a <a href="https://observablehq.com/framework/project-structure">new page</a> by adding a Markdown file (<code>whatever.md</code>) to the <code>src</code> folder.
-  </div>
-  <div class="card">
-    Add a drop-down menu using <a href="https://observablehq.com/framework/inputs/select"><code>Inputs.select</code></a> and use it to filter the data shown in a chart.
-  </div>
-  <div class="card">
-    Write a <a href="https://observablehq.com/framework/loaders">data loader</a> that queries a local database or API, generating a data snapshot on build.
-  </div>
-  <div class="card">
-    Import a <a href="https://observablehq.com/framework/imports">recommended library</a> from npm, such as <a href="https://observablehq.com/framework/lib/leaflet">Leaflet</a>, <a href="https://observablehq.com/framework/lib/dot">GraphViz</a>, <a href="https://observablehq.com/framework/lib/tex">TeX</a>, or <a href="https://observablehq.com/framework/lib/duckdb">DuckDB</a>.
-  </div>
-  <div class="card">
-    Ask for help, or share your work or ideas, on our <a href="https://github.com/observablehq/framework/discussions">GitHub discussions</a>.
-  </div>
-  <div class="card">
-    Visit <a href="https://github.com/observablehq/framework">Framework on GitHub</a> and give us a star. Or file an issue if you’ve found a bug!
-  </div>
-</div>
+  // Fetch the data from the API
+  fetch('https://data.cityofnewyork.us/resource/h9gi-nx95.json?$where=number_of_cyclist_injured%3E%3D1')
+    .then(response => response.json())
+    .then(data => {
+      // Filter the data to only include records from the past year
+      const oneYearAgo = new Date();
+      oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
 
-<style>
+      // Prepare heatmap data
+      let heatmapData = data
+        .filter(item => new Date(item.crash_date) >= oneYearAgo && item.latitude && item.longitude)
+        .map(item => [
+          parseFloat(item.latitude),
+          parseFloat(item.longitude),
+          parseInt(item.number_of_cyclist_injured) || 1 // Default intensity to 1 if missing
+        ]);
 
-.hero {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-family: var(--sans-serif);
-  margin: 4rem 0 8rem;
-  text-wrap: balance;
-  text-align: center;
-}
+      // Create the heatmap layer
+      // const heat = L.heatLayer(heatmapData, {
+      //   radius: 35, // Increased radius for better overlap
+      //   blur: 10,   // Slight blur for smooth transitions
+      //   maxZoom: 17,
+      //   minOpacity: 0.5, // Make heatmap more visible at all zoom levels
+      //   gradient: {
+      //     0.3: 'orange',
+      //     0.7: 'red',
+      //     1.0: 'darkred'
+      //   },
+      // }).addTo(map);
 
-.hero h1 {
-  margin: 1rem 0;
-  padding: 1rem 0;
-  max-width: none;
-  font-size: 14vw;
-  font-weight: 900;
-  line-height: 1;
-  background: linear-gradient(30deg, var(--theme-foreground-focus), currentColor);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
+      // Add tooltips for each original point (not duplicates)
+      data.forEach(item => {
+        if (item.latitude && item.longitude) {
+          const marker = L.circleMarker([item.latitude, item.longitude], {
+            radius: 25, // Invisible marker
+            blur: 1000,
+            color: "orange", 
+            maxZoom: 17,
+            fillOpacity: 0.25,
+            opacity: 0,
+            minOpacity: 1, // Make heatmap more visible at all zoom levels
+            gradient: {
+              0.25: 'blue',
+              0.5: 'lime',
+              1.0: 'red'
+            },
+          }).addTo(map);
 
-.hero h2 {
-  margin: 0;
-  max-width: 34em;
-  font-size: 20px;
-  font-style: initial;
-  font-weight: 500;
-  line-height: 1.5;
-  color: var(--theme-foreground-muted);
-}
+          marker.bindTooltip(
+            `Injuries: ${item.number_of_cyclist_injured}<br>Date: ${item.crash_date}`,
+            { direction: 'top', offset: [0, -10] }
+          );
+        }
+      });
+    });
+</script>
 
-@media (min-width: 640px) {
-  .hero h1 {
-    font-size: 90px;
+
+```js
+const csvURL = "https://data.cityofnewyork.us/resource/h9gi-nx95.csv?$where=number_of_cyclist_injured%3E=1"
+fetch(csvURL)
+  .then(response => {
+    if (!response.ok) throw new Error(response.status);
+    return response.text();
+  });
+
+let crashes = d3.csv(csvURL);
+
+```
+```js
+const color = Plot.scale({
+  color: {
+    type: "categorical",
+    domain: d3.groupSort(crashes, (D) => -D.length, (d) => d.borough),
+    unknown: "var(--theme-foreground-muted)"
   }
-}
+});
+```
 
-</style>
+<div class="hero">
+  <h2>
+  
+  Reported bicycle crashes by borough: </h2>
+<!-- Cards with big numbers -->
+</div>
+<div class="grid grid-cols-5">
+  <div class="card">
+    <h2>Brooklyn</h2>
+    <span class="big">${crashes.filter((d) => d.borough === "BROOKLYN").length.toLocaleString("en-US")}</span>
+  </div>
+  <div class="card">
+    <h2>Bronx</h2>
+    <span class="big">${crashes.filter((d) => d.borough === "BRONX").length.toLocaleString("en-US")}</span>
+  </div>
+  <div class="card">
+    <h2>Manhattan</h2>
+     <span class="big">${crashes.filter((d) => d.borough === "MANHATTAN").length.toLocaleString("en-US")}</span>
+  </div>
+  <div class="card">
+    <h2>Queens</h2>
+     <span class="big">${crashes.filter((d) => d.borough === "QUEENS").length.toLocaleString("en-US")}</span>
+  </div>
+  <div class="card">
+    <h2>Staten Island</h2>
+     <span class="big">${crashes.filter((d) => d.borough === "STATEN ISLAND").length.toLocaleString("en-US")}</span>
+  </div>
+</div>

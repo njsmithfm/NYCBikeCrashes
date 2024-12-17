@@ -1,6 +1,9 @@
 ---
 title: Burndown Chart
 ---
+```js
+// import {BurndownPlot} from "./components/burndownPlot.js";
+```
 
 ```js
 import * as Plot from "npm:@observablehq/plot";
