@@ -16,8 +16,8 @@ theme: deep-space
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
 <script>
-  // Initialize the map centered on Brooklyn
-  const map = L.map('map').setView([40.6782, -73.9442], 12); // Zoom level 12 for Brooklyn
+  // Initialize the map centered on NYC Triborough view
+  const map = L.map('map').setView([40.7128, -73.9], 11); // Centered on NYC with zoom level 11
 
   // Add a light mode tile layer (default OpenStreetMap)
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -74,7 +74,7 @@ theme: deep-space
           }).addTo(map);
 
           marker.bindTooltip(
-            `Injuries: ${item.number_of_cyclist_injured}<br>Date: ${item.crash_date}`,
+            `Cyclists Injured: ${item.number_of_cyclist_injured}<br>Date: ${new Date(item.crash_date).toLocaleDateString('en-US')}`,
             { direction: 'top', offset: [0, -10] }
           );
         }
