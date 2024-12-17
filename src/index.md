@@ -1,3 +1,6 @@
+---
+theme: deep-space
+---
 
 <div class="hero">
   <h1>NYC Bike Crash Dashboard</h1>

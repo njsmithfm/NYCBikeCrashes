@@ -1,5 +1,6 @@
 ---
 title: Burndown Chart
+theme: deep-space
 ---
 ```js
 // import {BurndownPlot} from "./components/burndownPlot.js";
