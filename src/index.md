@@ -6,7 +6,7 @@
   <title>NYC Bicycle Crash Heatmap</title>
      <h1>Bicycle Injuries in NYC</h1>
      <br>
-     <h4>This map shows geodata of vehicle collisions in the five boroughs which resulted in at least one cyclist getting injured. It indicates cyclist-unsafe areas by expressing density, as opposed to severity--meaning that what's emphasized are areas where crashes commonly occur, rather than individual crashes with high counts of cyclists injured. Vehicle data and a primary contributing factor are provided where available. <br>
+     <h4>This map shows geodata of vehicle collisions in the five boroughs which resulted in at least one cyclist getting injured. It indicates cyclist-unsafe areas by expressing concentrations, as opposed to severity--meaning that what's emphasized are areas where crashes commonly occur, rather than individual crashes with high counts of cyclists injured. Vehicle data and a primary contributing factor are provided where available. <br>
      <br>
      Many thanks to NYC Open Data for providing the <a href="https://data.cityofnewyork.us/Public-Safety/Motor-Vehicle-Collisions-Crashes/h9gi-nx95/about_data">Motor Vehicle Collisions</a> dataset and to <a href="https://leafletjs.com/">Leaflet</a> and <a href="https://github.com/Leaflet/Leaflet.heat">Leaflet.heat</a> for the vizualization tools. 
       </h4>
