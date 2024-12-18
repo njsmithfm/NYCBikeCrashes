@@ -35,7 +35,12 @@
 
   <script>
     // Initialize the Leaflet map
-    const map = L.map('map').setView([40.7128, -73.9560], 12); // Centered on NYC
+    const map = L.map('map',{
+      zoom: 12,                   // Default zoom level
+      maxZoom: 16,                // Prevent zooming in too much
+      minZoom: 10  
+    }
+    ).setView([40.7128, -73.9560], 12); // Centered on NYC
 
     // Add a base map layer (OpenStreetMap)
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -51,9 +56,7 @@
         data.forEach(item => {
         if (item.latitude && item.longitude) {
           const marker = L.circleMarker([item.latitude, item.longitude], {
-            radius: 15, // Invisible marker
-            blur: 0,
-            maxZoom: 17,
+            radius: 12, // Invisible marker
             fillOpacity: 0,
             opacity: 0,
             minOpacity: 0, // Make heatmap more visible at all zoom levels
