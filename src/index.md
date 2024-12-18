@@ -144,19 +144,19 @@ const color = Plot.scale({
     <h2>Brooklyn</h2>
     <span class="big">${crashes.filter((d) => d.borough === "BROOKLYN").length.toLocaleString("en-US")}</span>
   </div>
-  <div class="grid-colspan-1 card">
-    <h2>Bronx</h2>
-    <span class="big">${crashes.filter((d) => d.borough === "BRONX").length.toLocaleString("en-US")}</span>
-  </div>
-  <div class="grid-colspan-1 card">
+   <div class="grid-colspan-1 card">
     <h2>Manhattan</h2>
      <span class="big">${crashes.filter((d) => d.borough === "MANHATTAN").length.toLocaleString("en-US")}</span>
   </div>
-  <div class="grid-colspan-1 card">
+   <div class="grid-colspan-1 card">
     <h2>Queens</h2>
      <span class="big">${crashes.filter((d) => d.borough === "QUEENS").length.toLocaleString("en-US")}</span>
   </div>
   <div class="grid-colspan-1 card">
+    <h2>Bronx</h2>
+    <span class="big">${crashes.filter((d) => d.borough === "BRONX").length.toLocaleString("en-US")}</span>
+  </div>
+   <div class="grid-colspan-1 card">
     <h2>Staten Island</h2>
      <span class="big">${crashes.filter((d) => d.borough === "STATEN ISLAND").length.toLocaleString("en-US")}</span>
   </div>
