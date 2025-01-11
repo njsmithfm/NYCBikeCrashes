@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head width=100%> 
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NYC Bicycle Crash Heatmap</title>
@@ -23,6 +23,9 @@
 
   <style>
     /* Style for the map container */
+    p, table, figure, figcaption, h1, h2, h3, h4, h5, h6, .katex-display {
+      max-width: 100%;
+    }
     #map {
       width: 100%;
       height: 600px; /* Full-screen height */
