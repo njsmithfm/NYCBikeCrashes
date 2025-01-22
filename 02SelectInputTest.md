@@ -1,3 +1,7 @@
+---
+title: Select Input Test
+---
+
 <!DOCTYPE html>
 <html lang="en">
 <head width=100%> 
@@ -22,13 +26,13 @@
   <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
 
   <style>
-    
+    /* Style for the map container */
     p, table, figure, figcaption, h1, h2, h3, h4, h5, h6, .katex-display {
       max-width: 100%;
     }
     #map {
       width: 100%;
-      height: 600px;
+      height: 600px; /* Full-screen height */
     }
   </style>
 </head>
@@ -37,9 +41,6 @@
   <div id="map"></div>
 
   <script>
-  // data from NYC Open Data https://data.cityofnewyork.us/Public-Safety/Motor-Vehicle-Collisions-Crashes/h9gi-nx95/about_data
-
-
     // Initialize the Leaflet map
     const map = L.map('map',{
       zoom: 12,                   // Default zoom level
@@ -48,14 +49,13 @@
     }
     ).setView([40.7128, -73.9560], 12); // Centered on NYC
 
-    // Add a base map layer
+    // Add a base map layer (OpenStreetMap)
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 18,
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-       
     }).addTo(map);
 
-
+    // Fetch crash data from NYC Open Data API
     fetch("https://data.cityofnewyork.us/resource/h9gi-nx95.json?$query=SELECT%0A%20%20%60crash_date%60%2C%0A%20%20%60crash_time%60%2C%0A%20%20%60borough%60%2C%0A%20%20%60zip_code%60%2C%0A%20%20%60latitude%60%2C%0A%20%20%60longitude%60%2C%0A%20%20%60location%60%2C%0A%20%20%60on_street_name%60%2C%0A%20%20%60off_street_name%60%2C%0A%20%20%60cross_street_name%60%2C%0A%20%20%60number_of_persons_injured%60%2C%0A%20%20%60number_of_persons_killed%60%2C%0A%20%20%60number_of_pedestrians_injured%60%2C%0A%20%20%60number_of_pedestrians_killed%60%2C%0A%20%20%60number_of_cyclist_injured%60%2C%0A%20%20%60number_of_cyclist_killed%60%2C%0A%20%20%60number_of_motorist_injured%60%2C%0A%20%20%60number_of_motorist_killed%60%2C%0A%20%20%60contributing_factor_vehicle_1%60%2C%0A%20%20%60contributing_factor_vehicle_2%60%2C%0A%20%20%60contributing_factor_vehicle_3%60%2C%0A%20%20%60contributing_factor_vehicle_4%60%2C%0A%20%20%60contributing_factor_vehicle_5%60%2C%0A%20%20%60collision_id%60%2C%0A%20%20%60vehicle_type_code1%60%2C%0A%20%20%60vehicle_type_code2%60%2C%0A%20%20%60vehicle_type_code_3%60%2C%0A%20%20%60vehicle_type_code_4%60%2C%0A%20%20%60vehicle_type_code_5%60%0AWHERE%20%60number_of_cyclist_injured%60%20%3E%200%0AORDER%20BY%20%60crash_date%60%20DESC%20NULL%20LAST")
       .then(response => response.json())
       .then(data => {
@@ -63,10 +63,10 @@
         data.forEach(item => {
         if (item.latitude && item.longitude) {
           const marker = L.circleMarker([item.latitude, item.longitude], {
-            radius: 12,
+            radius: 12, // Invisible marker
             fillOpacity: 0,
             opacity: 0,
-            minOpacity: 0,
+            minOpacity: 0, // Make heatmap more visible at all zoom levels
           }).addTo(map);
 
           marker.bindTooltip(
@@ -88,19 +88,22 @@
         const heatData = data
           .filter(row => row.latitude && row.longitude) // Ensure rows have valid coordinates
           .map(row => {
-            const lat = parseFloat(row.latitude);
-            const lng = parseFloat(row.longitude);
-            const injuries = parseInt(row.number_of_cyclist_injured || 0);
+            const lat = parseFloat(row.latitude); // Latitude
+            const lng = parseFloat(row.longitude); // Longitude
+            const injuries = parseInt(row.number_of_cyclist_injured || 0); // Number of cyclists injured
+
+            // Set intensity to 1 if there's at least one cyclist injured, else 0.1
             let intensity = injuries > 0 ? 1 : 1;
+
             return [lat, lng, intensity]; // Return as [lat, lng, intensity]
           });
 
-        // Add a heatmap layer
+        // Add a heatmap layer to the map
         const heatLayer = L.heatLayer(heatData, {
-          radius: 10,
-          blur: 5,
-          maxZoom: 18, 
-          minOpacity: 0.45
+          radius: 10,  // Increase radius to make points larger
+          blur: 5,     // Reduce blur for sharper heatmap
+          maxZoom: 18, // Max zoom level for heatmap intensity
+          minOpacity: 0.45 // Minimum opacity for better visibility
         });
 
         // Add the heat layer to the map
@@ -115,84 +118,24 @@
 </body>
 </html>
 
+
 ```js
-const jsonURL =
-  "https://data.cityofnewyork.us/resource/h9gi-nx95.json?$query=SELECT%0A%20%20%60crash_date%60%2C%0A%20%20%60crash_time%60%2C%0A%20%20%60borough%60%2C%0A%20%20%60zip_code%60%2C%0A%20%20%60latitude%60%2C%0A%20%20%60longitude%60%2C%0A%20%20%60location%60%2C%0A%20%20%60on_street_name%60%2C%0A%20%20%60off_street_name%60%2C%0A%20%20%60cross_street_name%60%2C%0A%20%20%60number_of_persons_injured%60%2C%0A%20%20%60number_of_persons_killed%60%2C%0A%20%20%60number_of_pedestrians_injured%60%2C%0A%20%20%60number_of_pedestrians_killed%60%2C%0A%20%20%60number_of_cyclist_injured%60%2C%0A%20%20%60number_of_cyclist_killed%60%2C%0A%20%20%60number_of_motorist_injured%60%2C%0A%20%20%60number_of_motorist_killed%60%2C%0A%20%20%60contributing_factor_vehicle_1%60%2C%0A%20%20%60contributing_factor_vehicle_2%60%2C%0A%20%20%60contributing_factor_vehicle_3%60%2C%0A%20%20%60contributing_factor_vehicle_4%60%2C%0A%20%20%60contributing_factor_vehicle_5%60%2C%0A%20%20%60collision_id%60%2C%0A%20%20%60vehicle_type_code1%60%2C%0A%20%20%60vehicle_type_code2%60%2C%0A%20%20%60vehicle_type_code_3%60%2C%0A%20%20%60vehicle_type_code_4%60%2C%0A%20%20%60vehicle_type_code_5%60%0AWHERE%20%60number_of_cyclist_injured%60%20%3E%200%0AORDER%20BY%20%60crash_date%60%20DESC%20NULL%20LAST";
-fetch(jsonURL).then((response) => {
-  if (!response.ok) throw new Error(response.status);
-  return response.text();
-});
+const jsonURL = "https://data.cityofnewyork.us/resource/h9gi-nx95.json?$query=SELECT%0A%20%20%60crash_date%60%2C%0A%20%20%60crash_time%60%2C%0A%20%20%60borough%60%2C%0A%20%20%60zip_code%60%2C%0A%20%20%60latitude%60%2C%0A%20%20%60longitude%60%2C%0A%20%20%60location%60%2C%0A%20%20%60on_street_name%60%2C%0A%20%20%60off_street_name%60%2C%0A%20%20%60cross_street_name%60%2C%0A%20%20%60number_of_persons_injured%60%2C%0A%20%20%60number_of_persons_killed%60%2C%0A%20%20%60number_of_pedestrians_injured%60%2C%0A%20%20%60number_of_pedestrians_killed%60%2C%0A%20%20%60number_of_cyclist_injured%60%2C%0A%20%20%60number_of_cyclist_killed%60%2C%0A%20%20%60number_of_motorist_injured%60%2C%0A%20%20%60number_of_motorist_killed%60%2C%0A%20%20%60contributing_factor_vehicle_1%60%2C%0A%20%20%60contributing_factor_vehicle_2%60%2C%0A%20%20%60contributing_factor_vehicle_3%60%2C%0A%20%20%60contributing_factor_vehicle_4%60%2C%0A%20%20%60contributing_factor_vehicle_5%60%2C%0A%20%20%60collision_id%60%2C%0A%20%20%60vehicle_type_code1%60%2C%0A%20%20%60vehicle_type_code2%60%2C%0A%20%20%60vehicle_type_code_3%60%2C%0A%20%20%60vehicle_type_code_4%60%2C%0A%20%20%60vehicle_type_code_5%60%0AWHERE%20%60number_of_cyclist_injured%60%20%3E%200%0AORDER%20BY%20%60crash_date%60%20DESC%20NULL%20LAST"
+fetch(jsonURL)
+  .then(response => {
+    if (!response.ok) throw new Error(response.status);
+    return response.text();
+  });
 
 let crashes = d3.json(jsonURL);
 
 ```
-
 ```js
 const color = Plot.scale({
   color: {
     type: "categorical",
-    domain: d3.groupSort(
-      crashes,
-      (D) => -D.length,
-      (d) => d.borough
-    ),
-    unknown: "var(--theme-foreground-muted)",
-  },
-});
-```
-
-<div class="hero">
-  <h2>
-  
-  Bicycle crashes by borough in the past year: </h2>
-
-</div>
-<div class="grid grid-cols-4">
-  <div class="grid-colspan-4 card"> 
-    <h2>Brooklyn</h2>
-    <span class="big">${crashes.filter((d) => d.borough === "BROOKLYN").length.toLocaleString("en-US")}</span>
-  </div>
-   <div class="grid-colspan-1 card">
-    <h2>Manhattan</h2>
-     <span class="big">${crashes.filter((d) => d.borough === "MANHATTAN").length.toLocaleString("en-US")}</span>
-  </div>
-   <div class="grid-colspan-1 card">
-    <h2>Queens</h2>
-     <span class="big">${crashes.filter((d) => d.borough === "QUEENS").length.toLocaleString("en-US")}</span>
-  </div>
-  <div class="grid-colspan-1 card">
-    <h2>Bronx</h2>
-    <span class="big">${crashes.filter((d) => d.borough === "BRONX").length.toLocaleString("en-US")}</span>
-  </div>
-   <div class="grid-colspan-1 card">
-    <h2>Staten Island</h2>
-     <span class="big">${crashes.filter((d) => d.borough === "STATEN ISLAND").length.toLocaleString("en-US")}</span>
-  </div>
-</div>
-<br>
-<br>
-
-
-```js
-
-
-Inputs.table(crashes,{
-
-  columns: [
-    "borough",
-    "crash_date",
-    "contributing_factor_vehicle_1",
-    "vehicle_type_code1",
-    "vehicle_type_code2",
-    "number_of_cyclist_injured"
-  ],
-  header: {
-    number_of_cyclist_injured: "Cylists Injured",
-    borough: "Borough",
-    crash_date: "Date",
-    vehicle_type_code1: "Vehicle 1",
-    vehicle_type_code2: "Vehicle 2",
-    contributing_factor_vehicle_1: "Contributing Factor"
+    domain: d3.groupSort(crashes, (D) => -D.length, (d) => d.borough),
+    unknown: "var(--theme-foreground-muted)"
   }
-})
+});
 ```
