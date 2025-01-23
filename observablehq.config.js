@@ -3,7 +3,6 @@ export default {
   // The app’s title; used in the sidebar and webpage titles.
   title: "NYC Bike Crash Dashboard",
   theme: "midnight",
-  pager: "false",
   // The pages and sections in the sidebar. If you don’t specify this option,
   // all pages will be listed in alphabetical order. Listing pages explicitly
   // lets you organize them into sections and have unlisted pages.
@@ -29,7 +28,7 @@ export default {
   footer: "Built by <a href='https://linktr.ee/njsmith'>NJ Smith</a> with <a href='https://observablehq.com/'>Observable.</a>", // what to show in the footer (HTML)
   // sidebar: true, // whether to show the sidebar
   // toc: true, // whether to show the table of contents
-  // pager: true, // whether to show previous & next links in the footer
+  pager: false, // whether to show previous & next links in the footer
   // output: "dist", // path to the output root for build
   // search: true, // activate search
   // linkify: true, // convert URLs in Markdown to links
