@@ -27,7 +27,7 @@ const color = Plot.scale({
 
 ```js
 const MapView = view(
-  Inputs.select(["Show All", "E-Bikes", "Pedicabs"], { label: "Map Options" })
+  Inputs.select(["Show All", "Manhattan", "Brooklyn", "Queens", "Bronx","Staten Island", "E-Bikes", "Pedicabs"], { label: "Map Options" })
 );
 ```
 
