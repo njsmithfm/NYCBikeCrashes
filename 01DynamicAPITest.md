@@ -44,13 +44,9 @@ title: Dynamic API Test
     maxZoom: 18,
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
   }).addTo(map);
-
-  // Select Input to change the view of the map
-  const MapView = view(Inputs.select(x11colors, {value: "steelblue", label: "Favorite color"}));
-  Mapview;
   
   //Add the Dynamic API
-  const api_url = 'https://data.cityofnewyork.us/resource/h9gi-nx95.json?$where=number_of_cyclist_injured%3E%3D1';
+  const api_url = 'https://data.cityofnewyork.us/resource/h9gi-nx95.json?$where=number_of_cyclist_injured%3E%3D1%20AND%20crash_date%20%3E=%20%272024-12-23T00:00:00%27&$order=crash_date%20DESC';
   // 22 Jan 2025 This API is filtered for cyclists injured >= 1
   // still need to filter further and sort by date descending
 
@@ -64,5 +60,6 @@ title: Dynamic API Test
   getDynamicAPI();
 
 
-
 </script>
+
+Today's date is ${new Date(now).toLocaleString("en-US")}. The map above is displaying crash data from the previous 90 days (from ${new Date(now - 90).toLocaleString("en-US")} to today).

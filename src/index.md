@@ -4,14 +4,96 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NYC Bicycle Crash Heatmap</title>
-     <h1>Bicycle Injuries in NYC</h1>
+     <h1>What Parts Of New York City Are Most Hazardous For Cyclists?</h1>
      <br>
-     <h4>This map shows geodata of vehicle collisions in the five boroughs which resulted in at least one cyclist getting injured. It suggests where there are cyclist-unsafe "hotspots" in NYC by showing concentrations thermally, meaning that what's emphasized in red are locations where crashes occur more frequently than elsewhere. Vehicle data and a primary contributing factor are provided where available. <br>
-     <br>
-     Many thanks to NYC Open Data for providing the <a href="https://data.cityofnewyork.us/Public-Safety/Motor-Vehicle-Collisions-Crashes/h9gi-nx95/about_data">Motor Vehicle Collisions</a> dataset and to <a href="https://leafletjs.com/">Leaflet</a> and <a href="https://github.com/Leaflet/Leaflet.heat">Leaflet.heat</a> for the vizualization tools. 
+     <h4>This map shows geospatial data of traffic collisions in NYC in which at least one cyclist was injured. Data shown includes one year prior to the today's date. The map shows crash densities thermally (in red), to suggest areas that are comparatively more dangerous for cyclists. Vehicle data and a primary contributing factor are provided where available. <br>
       </h4>
      <br>
      <br>
+
+<!-- ```js
+const color = Plot.scale({
+  color: {
+    type: "categorical",
+    domain: d3.groupSort(
+      crashes,
+      (D) => -D.length,
+      (d) => d.borough
+    ),
+    unknown: "var(--theme-foreground-muted)",
+  },
+});
+``` -->
+
+```js
+const MapView = view(
+  Inputs.select(["Show All", "E-Bikes", "Pedicabs"], { label: "Map Options" })
+);
+```
+
+<div class="card card-cols-2">
+  <div class="card">
+<!-- PUT LEGEND HERE -->
+     <div id="map"></div>
+  </div>
+
+```js
+// Format dates before rendering table
+crashes.forEach((crash) => {
+  let date = new Date(crash.crash_date);
+  crash.crash_date = date.toLocaleDateString("en-US"); // MM/DD/YYYY format
+});
+```
+
+<div class="card" style="padding: 0;">
+    ${Inputs.table(crashes, {
+  columns: [
+    "borough",
+    "crash_date",
+    "contributing_factor_vehicle_1",
+    "vehicle_type_code1",
+    "vehicle_type_code2",
+    "number_of_cyclist_injured",
+  ],
+  header: {
+    number_of_cyclist_injured: "Cylists Injured",
+    borough: "Borough",
+    crash_date: "Date",
+    vehicle_type_code1: "Vehicle 1",
+    vehicle_type_code2: "Vehicle 2",
+    contributing_factor_vehicle_1: "Contributing Factor",
+  },
+})}
+</div>
+
+  <div id="table"></div>
+
+  </div>
+
+<div class="card grid-cols-4: auto;"> 
+    <h1>In the past year,</h1>
+  <div class="grid">
+    <span> There have been ${crashes.filter((d) => d.borough === "BROOKLYN").length.toLocaleString("en-US")} crashes in Brooklyn.</span>
+  </div>
+   <div class="grid">
+     <span>There have been ${crashes.filter((d) => d.borough === "MANHATTAN").length.toLocaleString("en-US")} crashes in Manhattan.</span>
+  </div>
+   <div class="grid">
+     <span>There have been ${crashes.filter((d) => d.borough === "QUEENS").length.toLocaleString("en-US")} crashes in Queens.</span>
+  </div>
+  <div class="grid">
+    <span>There have been ${crashes.filter((d) => d.borough === "BRONX").length.toLocaleString("en-US")} crashes in The Bronx.</span>
+  </div>
+   <div class="grid">
+     <span>There have been ${crashes.filter((d) => d.borough === "STATEN ISLAND").length.toLocaleString("en-US")} crashes in Staten Island.</span>
+  </div>
+  </div>
+
+   <html>
+      <br>
+      <i>Many thanks to NYC Open Data for providing the <a href="https://data.cityofnewyork.us/Public-Safety/Motor-Vehicle-Collisions-Crashes/h9gi-nx95/about_data">Motor Vehicle Collisions</a> dataset and to <a href="https://leafletjs.com/">Leaflet</a> and <a href="https://github.com/Leaflet/Leaflet.heat">Leaflet.heat</a> for the vizualization tools. </i>
+    </html>
+
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
@@ -22,7 +104,6 @@
   <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
 
   <style>
-    
     p, table, figure, figcaption, h1, h2, h3, h4, h5, h6, .katex-display {
       max-width: 100%;
     }
@@ -42,9 +123,8 @@
 
     // Initialize the Leaflet map
     const map = L.map('map',{
-      zoom: 12,                   // Default zoom level
       maxZoom: 16,                // Prevent zooming in too much
-      minZoom: 10  
+      minZoom: 13  
     }
     ).setView([40.7128, -73.9560], 12); // Centered on NYC
 
@@ -97,10 +177,10 @@
 
         // Add a heatmap layer
         const heatLayer = L.heatLayer(heatData, {
-          radius: 10,
-          blur: 5,
-          maxZoom: 18, 
-          minOpacity: 0.45
+          radius: 14,
+          blur: 10,
+          minOpacity: 0.5,
+          gradient: {0.25: 'blue', 0.55: 'lime', 0.6:'red'}
         });
 
         // Add the heat layer to the map
@@ -110,7 +190,7 @@
         console.error("Error fetching or processing the data:", error);
       });
 
-      
+
   </script>
 </body>
 </html>
@@ -124,75 +204,4 @@ fetch(jsonURL).then((response) => {
 });
 
 let crashes = d3.json(jsonURL);
-
-```
-
-```js
-const color = Plot.scale({
-  color: {
-    type: "categorical",
-    domain: d3.groupSort(
-      crashes,
-      (D) => -D.length,
-      (d) => d.borough
-    ),
-    unknown: "var(--theme-foreground-muted)",
-  },
-});
-```
-
-<div class="hero">
-  <h2>
-  
-  Bicycle crashes by borough in the past year: </h2>
-
-</div>
-<div class="grid grid-cols-4">
-  <div class="grid-colspan-4 card"> 
-    <h2>Brooklyn</h2>
-    <span class="big">${crashes.filter((d) => d.borough === "BROOKLYN").length.toLocaleString("en-US")}</span>
-  </div>
-   <div class="grid-colspan-1 card">
-    <h2>Manhattan</h2>
-     <span class="big">${crashes.filter((d) => d.borough === "MANHATTAN").length.toLocaleString("en-US")}</span>
-  </div>
-   <div class="grid-colspan-1 card">
-    <h2>Queens</h2>
-     <span class="big">${crashes.filter((d) => d.borough === "QUEENS").length.toLocaleString("en-US")}</span>
-  </div>
-  <div class="grid-colspan-1 card">
-    <h2>Bronx</h2>
-    <span class="big">${crashes.filter((d) => d.borough === "BRONX").length.toLocaleString("en-US")}</span>
-  </div>
-   <div class="grid-colspan-1 card">
-    <h2>Staten Island</h2>
-     <span class="big">${crashes.filter((d) => d.borough === "STATEN ISLAND").length.toLocaleString("en-US")}</span>
-  </div>
-</div>
-<br>
-<br>
-
-
-```js
-
-
-Inputs.table(crashes,{
-
-  columns: [
-    "borough",
-    "crash_date",
-    "contributing_factor_vehicle_1",
-    "vehicle_type_code1",
-    "vehicle_type_code2",
-    "number_of_cyclist_injured"
-  ],
-  header: {
-    number_of_cyclist_injured: "Cylists Injured",
-    borough: "Borough",
-    crash_date: "Date",
-    vehicle_type_code1: "Vehicle 1",
-    vehicle_type_code2: "Vehicle 2",
-    contributing_factor_vehicle_1: "Contributing Factor"
-  }
-})
 ```
