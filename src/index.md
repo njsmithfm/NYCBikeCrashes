@@ -73,19 +73,19 @@ crashes.forEach((crash) => {
 <div class="card grid-cols-4: auto;"> 
     <h1>In the past year,</h1>
   <div class="grid">
-    <span> There have been ${crashes.filter((d) => d.borough === "BROOKLYN").length.toLocaleString("en-US")} crashes in Brooklyn.</span>
+    <span> There have been ${crashes.filter((d) => d.borough === "BROOKLYN").length.toLocaleString("en-US")} cyclist injuries in Brooklyn.</span>
   </div>
    <div class="grid">
-     <span>There have been ${crashes.filter((d) => d.borough === "MANHATTAN").length.toLocaleString("en-US")} crashes in Manhattan.</span>
+     <span>There have been ${crashes.filter((d) => d.borough === "MANHATTAN").length.toLocaleString("en-US")} cyclist injuries in Manhattan.</span>
   </div>
    <div class="grid">
-     <span>There have been ${crashes.filter((d) => d.borough === "QUEENS").length.toLocaleString("en-US")} crashes in Queens.</span>
+     <span>There have been ${crashes.filter((d) => d.borough === "QUEENS").length.toLocaleString("en-US")} cyclist injuries in Queens.</span>
   </div>
   <div class="grid">
-    <span>There have been ${crashes.filter((d) => d.borough === "BRONX").length.toLocaleString("en-US")} crashes in The Bronx.</span>
+    <span>There have been ${crashes.filter((d) => d.borough === "BRONX").length.toLocaleString("en-US")} cyclist injuries in The Bronx.</span>
   </div>
    <div class="grid">
-     <span>There have been ${crashes.filter((d) => d.borough === "STATEN ISLAND").length.toLocaleString("en-US")} crashes in Staten Island.</span>
+     <span>There have been ${crashes.filter((d) => d.borough === "STATEN ISLAND").length.toLocaleString("en-US")} cyclist injuries in Staten Island.</span>
   </div>
   </div>
 
