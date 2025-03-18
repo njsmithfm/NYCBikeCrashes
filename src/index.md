@@ -24,12 +24,12 @@ const color = Plot.scale({
   },
 });
 ``` -->
-
+<!-- 
 ```js
 const MapView = view(
   Inputs.select(["Show All", "Manhattan", "Brooklyn", "Queens", "Bronx","Staten Island", "E-Bikes", "Pedicabs"], { label: "Map Options" })
 );
-```
+``` -->
 
 <div class="card card-cols-2">
   <div class="card">
